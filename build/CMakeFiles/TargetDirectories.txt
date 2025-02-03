@@ -1,0 +1,11 @@
+/home/biratbc/Socket-C/build/CMakeFiles/edit_cache.dir
+/home/biratbc/Socket-C/build/CMakeFiles/rebuild_cache.dir
+/home/biratbc/Socket-C/build/socketutil/CMakeFiles/socketutil.dir
+/home/biratbc/Socket-C/build/socketutil/CMakeFiles/edit_cache.dir
+/home/biratbc/Socket-C/build/socketutil/CMakeFiles/rebuild_cache.dir
+/home/biratbc/Socket-C/build/client/CMakeFiles/client.dir
+/home/biratbc/Socket-C/build/client/CMakeFiles/edit_cache.dir
+/home/biratbc/Socket-C/build/client/CMakeFiles/rebuild_cache.dir
+/home/biratbc/Socket-C/build/server/CMakeFiles/server.dir
+/home/biratbc/Socket-C/build/server/CMakeFiles/edit_cache.dir
+/home/biratbc/Socket-C/build/server/CMakeFiles/rebuild_cache.dir
