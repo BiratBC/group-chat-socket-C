@@ -9,6 +9,7 @@
 #include<malloc.h>
 #include<stdlib.h>
 #include<unistd.h>
+#include<stdbool.h>
 
 int createTCPIpv4Socket();
 struct sockaddr_in* createIpv4Addrress(char* ip, unsigned int);

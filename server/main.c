@@ -1,5 +1,31 @@
 #include "socketutil.h"
 
+struct AcceptanceSocket {
+    int acceptedSocketFD;
+    struct sockaddr_in address;
+    int error;
+    bool acceptedSuccessfully;
+};
+
+struct AcceptanceSocket* acceptIncomingConnection(int serverSocketFD){
+    struct sockaddr_in clientAddress;
+    int clientAddressSize = sizeof(clientAddress);
+    // accept will wait for a client connection to be made
+    int clientSocketFD = accept(serverSocketFD, (struct sockaddr *)&clientAddress, &clientAddressSize);
+
+    struct AcceptanceSocket* acceptanceSocket = malloc(sizeof(struct AcceptanceSocket));
+    acceptanceSocket->address = clientAddress;
+    acceptanceSocket->acceptedSocketFD = clientSocketFD;
+    acceptanceSocket->acceptedSuccessfully = clientSocketFD > 0;
+
+    if (!acceptanceSocket->acceptedSuccessfully)
+    {
+        acceptanceSocket->error = clientSocketFD;
+    }
+    
+    return acceptanceSocket;
+}
+
 int main()
 {
 
@@ -23,13 +49,10 @@ int main()
     // accept will create a file descriptor for each connecting client on the server side and returns the file descriptor ,
     //  so we will have the access to the file descriptor of client on server side
 
-    struct sockaddr_in clientAddress;
-    int clientAddressSize = sizeof(clientAddress);
-    // accept will wait for a client connection to be made
-    int clientSocketFD = accept(serverSocketFD, (struct sockaddr *)&clientAddress, &clientAddressSize);
+    
+    int clientSocketFD = acceptIncomingConnection(serverSocketFD);
 
     // Message incoming
-
     char buffer[1024];
     while (1)
     {
