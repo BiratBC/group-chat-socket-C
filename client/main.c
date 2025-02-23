@@ -28,6 +28,16 @@ int main()
         printf("Connection failed\n");
     }
 
+
+    //Intially ask for the client name :
+    char *name = NULL;
+    size_t nameSize = 0;
+    printf("Enter your name : \n");
+    ssize_t nameCount = getline(&name, &nameSize, stdin);
+
+    //Remove the extra '\n' at the end so that the format -> name : message will be displayed
+    name[nameCount-1] = 0;
+
     // Read the input/message from the console
     char *line = NULL;
     size_t lineSize = 0;
@@ -35,14 +45,22 @@ int main()
 
     startListeningAndPrintMessagesOnNewThread(socketFD);
 
+    char buffer[1024];
+    
+
     while (1)
     {
+        
         ssize_t charCount = getline(&line, &lineSize, stdin);
+        line[charCount - 1] = 0;
+
+        //appending name to the message that a client sends
+        sprintf(buffer,"%s : %s",name, line);
         if (charCount > 0)
         {
-            if (strcmp(line, "exit\n") == 0)
+            if (strcmp(line, "exit") == 0)
                 break;
-            ssize_t amountWasSent = send(socketFD, line, charCount, 0);
+            ssize_t amountWasSent = send(socketFD, buffer, strlen(buffer), 0);
         }
     }
 
@@ -88,7 +106,7 @@ void* listenAndPrint(void *arg){
         if (amountReceived > 0)
         {
             buffer[amountReceived] = 0;
-            printf("Received: %s\n", buffer);
+            printf("%s\n", buffer);
 
             // sendReceivedMessageToTheOtherClient(buffer, clientSocketFD);
         }
