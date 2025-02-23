@@ -1,5 +1,9 @@
 
 #include "socketutil.h"
+#include <pthread.h>
+
+void startListeningAndPrintMessagesOnNewThread(int clientSocketFD);
+void* listenAndPrint(void* clientSocketFD);
 
 int main()
 {
@@ -28,6 +32,9 @@ int main()
     char *line = NULL;
     size_t lineSize = 0;
     printf("Type to send the information : (type exit)\n");
+
+    startListeningAndPrintMessagesOnNewThread(socketFD);
+
     while (1)
     {
         ssize_t charCount = getline(&line, &lineSize, stdin);
@@ -55,4 +62,46 @@ int main()
     // printf("Response we receive: %s\n", buffer);
 
     return 0;
+}
+
+void startListeningAndPrintMessagesOnNewThread(int clientSocketFD){
+
+
+    //creating a new thread
+    int *clientFD = malloc(sizeof(int));
+    *clientFD = clientSocketFD;
+
+    pthread_t id;
+    pthread_create(&id, NULL, listenAndPrint,(void*)clientFD);
+    pthread_detach(id);
+
+   
+}
+
+void* listenAndPrint(void *arg){
+    int clientSocketFD  = *(int*)arg;
+     char buffer[1024];
+    // printf("Listening for messages from client FD: %d...\n", clientSocketFD);
+    while (1)
+    {
+        ssize_t amountReceived = recv(clientSocketFD, buffer, sizeof(buffer), 0);
+        if (amountReceived > 0)
+        {
+            buffer[amountReceived] = 0;
+            printf("Received: %s\n", buffer);
+
+            // sendReceivedMessageToTheOtherClient(buffer, clientSocketFD);
+        }
+        else if (amountReceived == 0)
+        {
+            printf("Client disconnected\n");
+            break;
+        }
+        else
+        {
+            perror("recv failed\n");
+            break;
+        }
+    }
+    close(clientSocketFD);
 }
